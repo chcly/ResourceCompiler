@@ -180,7 +180,7 @@ namespace Rt2::ResourceCompiler
 
         void writeSource(OStream& out)
         {
-            WriteUtils::writeLine(out, 0x00, 2, "#include \"", _output, ".h\"");
+            WriteUtils::writeLine(out, 0x00, 2, "#include \"", PathUtil(_output).stem(), ".h\"");
             String namespaceName;
 
             if (!_namespace.empty())
