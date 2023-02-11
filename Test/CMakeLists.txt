@@ -19,29 +19,29 @@
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
 set(TestTargetName ${TargetName}Test)
+include(TestDirectory)
+gen_path_to_here()
 
 set(TestTarget_SOURCE
     Test1.cpp
 )
 
-set(ABSOLUTE_TEST_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-configure_file(
-	${CMAKE_CURRENT_SOURCE_DIR}/TestDirectory.h.in
-	${CMAKE_CURRENT_BINARY_DIR}/TestDirectory.h
+include_directories(
+    ${GTEST_INCLUDE}
+    ${Utils_INCLUDE}
 )
-
-include_directories(. ${GTEST_INCLUDE} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(
     ${TestTargetName}
     ${TestTarget_SOURCE}
 )
-target_link_libraries(${TestTargetName} ${GTEST_LIBRARY})
+target_link_libraries(
+    ${TestTargetName} 
+    ${GTEST_LIBRARY}
+    ${Utils_LIBRARY}
+)
 
-if (TargetFolders)
-    set_target_properties(${TestTargetName} PROPERTIES FOLDER "${TargetGroup}")
-endif()
-
+set_target_properties(${TestTargetName} PROPERTIES FOLDER "${TargetGroup}")
 
 if (ResourceCompiler_AUTO_RUN_TEST)
     run_test(${TestTargetName})

@@ -27,57 +27,35 @@
 #include "Utils/Path.h"
 #include "Utils/TextStreamWriter.h"
 #include "Utils/Win32/CrtUtils.h"
+
 using namespace std;
 
 namespace Rt2::ResourceCompiler
 {
-    /**
-     * \brief ResourceCompiler command line options
-     */
     enum Option
     {
-        /**
-         * \brief Specify an output file name.
-         *
-         * <tt>-o [file-stem-name]</tt>
-         *
-         *  The output files will be split between
-         *  a source and header file with the supplied name.
-         */
         OptOutputFileName,
-
-        /**
-         * \brief Specify a root namespace name
-         *
-         * <tt>-n [namespace]</tt>
-         *
-         *
-         */
         OptNameSpace,
         OptionsMax,
     };
 
-    /**
-     * \brief Provides and array of CommandLine::Switch objects foreach
-     * \ref ResourceCompiler::Option "Option"
-     */
     constexpr CommandLine::Switch Switches[OptionsMax] = {
         {
-            OptOutputFileName,
-            'o',
-            nullptr,
-            "Specify the output file name",
-            true,
-            1,
-        },
+         OptOutputFileName,
+         'o',
+         nullptr,
+         "Specify the output file name",
+         true,
+         1,
+         },
         {
-            OptNameSpace,
-            'n',
-            nullptr,
-            "Specify a root namespace",
-            true,
-            1,
-        },
+         OptNameSpace,
+         'n',
+         nullptr,
+         "Specify a root namespace",
+         true,
+         1,
+         },
     };
 
     struct Resource
@@ -88,10 +66,6 @@ namespace Rt2::ResourceCompiler
 
     using ResourceMap = std::unordered_map<String, Resource>;
 
-    /**
-     * \brief Entry point for the ResourceCompiler.
-     *
-     */
     class Application
     {
     private:
@@ -114,7 +88,7 @@ namespace Rt2::ResourceCompiler
             _input     = p.arguments();
 
             if (_input.empty())
-                throw Exception("No input files");
+                throw Exception("no input files");
             return true;
         }
 
@@ -122,16 +96,13 @@ namespace Rt2::ResourceCompiler
         {
             InputFileStream in(input, std::ios_base::binary);
             if (!in.is_open())
-                throw Exception("Failed to open the supplied file '", input, '\'');
+                throw Exception("failed to open the supplied file '", input, '\'');
 
-            String name = PathUtil(input).stem();
-            name        = StringUtils::toLowerFirst(name);
+            String name = Su::toLowerFirst(PathUtil(input).stem());
 
-            OutputStringStream srcImpl;
             OutputStringStream bufferImpl;
 
             size_t len = 0;
-
             bufferImpl << std::setfill(' ') << std::setw(0x0B) << ' ';
 
             char ch;
@@ -149,19 +120,25 @@ namespace Rt2::ResourceCompiler
                     bufferImpl << std::endl;
                     bufferImpl << std::setfill(' ') << std::setw(0x0B) << ' ';
                 }
-
                 ++len;
             }
 
-            srcImpl << std::setw(0x07) << ' ' << "static uint8_t "
-                    << name
-                    << "[";
-            srcImpl << len << "]={" << std::endl;
+            if (len > 0)
+            {
+                OutputStringStream srcImpl;
+                srcImpl << std::setw(0x07) << ' ' << "static uint8_t "
+                        << name
+                        << "["
+                        << len << "]={"
+                        << std::endl
+                        << bufferImpl.str()
+                        << std::endl
+                        << std::setw(0x07) << ' ' << "};" << std::endl;
 
-            srcImpl << bufferImpl.str() << std::endl;
-            srcImpl << std::setw(0x07) << ' ' << "};" << std::endl;
-
-            _resources[name] = {srcImpl.str(), len};
+                _resources[name] = {srcImpl.str(), len};
+            }
+            else
+                _resources[name] = {"", 0};
         }
 
         void writeHeader(OStream& out)
@@ -170,7 +147,6 @@ namespace Rt2::ResourceCompiler
             WriteUtils::write(out, 0x00, "#include \"Utils/Array.h\"");
 
             String namespaceName;
-
             if (!_namespace.empty())
                 namespaceName = Su::join(namespaceName, _namespace);
             else
@@ -230,8 +206,16 @@ namespace Rt2::ResourceCompiler
                                   methodName,
                                   "(ByteArray &dest)");
                 WriteUtils::write(out, 0x04, '{');
-                WriteUtils::write(out, 0x00, source.data);
-                WriteUtils::write(out, 0x08, "dest.write(", name, ", ", source.size, ");");
+                if (source.size > 0)
+                {
+                    WriteUtils::write(out, 0x00, source.data);
+                    WriteUtils::write(out, 0x08, "dest.write(", name, ", ", source.size, ");");
+                }
+                else
+                {
+                    WriteUtils::write(out, 0x08, "// was unable to read any data from the supplied file, so");
+                    WriteUtils::write(out, 0x08, "dest.clear();");
+                }
                 WriteUtils::write(out, 0x04, '}');
             }
             WriteUtils::write(out, 0x00, "} // namespace ", namespaceName);

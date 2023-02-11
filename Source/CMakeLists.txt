@@ -14,5 +14,6 @@ add_executable(${TargetName}
 
 target_link_libraries(${TargetName} ${Utils_LIBRARY})
 
+copy_target(${TargetName} ${CMAKE_BINARY_DIR})
 
 set_target_properties(${TargetName} PROPERTIES FOLDER "${TargetGroup}")
