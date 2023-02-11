@@ -1,0 +1,2 @@
+This is meant to be a block of text that will be tested for  
+equality in the ResourceCompiler test RC_003.
