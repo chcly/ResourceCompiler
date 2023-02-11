@@ -43,6 +43,6 @@ if (TargetFolders)
 endif()
 
 
-if (Template_AUTO_RUN_TEST)
+if (ResourceCompiler_AUTO_RUN_TEST)
     run_test(${TestTargetName})
 endif()

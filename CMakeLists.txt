@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(Template)
+project(ResourceCompiler)
 
 # Use C++-17 by default.
 enable_language(CXX)
@@ -11,40 +11,41 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # CMake - Contains project local modules.
 #
 # CMake/Modules - Contains project independent modules.
-#   GitUpdate.cmake invokes python ${Template_SOURCE_DIR}/gitupdate.py
+#   GitUpdate.cmake invokes python ${ResourceCompiler_SOURCE_DIR}/gitupdate.py
 #   to pull all submodules and update to head.
 #   If this fails, it will attempt to invoke git directly to pull 
 #   submodules. 
 list(APPEND CMAKE_MODULE_PATH 
-  ${Template_SOURCE_DIR}/CMake 
-  ${Template_SOURCE_DIR}/CMake/Modules
+  ${ResourceCompiler_SOURCE_DIR}/CMake 
+  ${ResourceCompiler_SOURCE_DIR}/CMake/Modules
 )
-include(${Template_SOURCE_DIR}/CMake/Configure.cmake)
+include(${ResourceCompiler_SOURCE_DIR}/CMake/Configure.cmake)
 if (NOT Configure_SUCCEEDED)
    return()
 endif()
 
 
 
-if (Template_ExternalTarget)
-    set(TargetFolders ${Template_TargetFolders})
-    set(TargetName    ${Template_TargetName})
-    set(TargetGroup   ${Template_TargetGroup})
+if (ResourceCompiler_ExternalTarget)
+    set(TargetFolders ${ResourceCompiler_TargetFolders})
+    set(TargetName    ${ResourceCompiler_TargetName})
+    set(TargetGroup   ${ResourceCompiler_TargetGroup})
 else()
     add_subdirectory(CMake)
+    add_subdirectory(Internal/Utils)
 
     set(TargetFolders TRUE)
-    set(TargetName Template)
+    set(TargetName ResourceCompiler)
     set(TargetGroup )
 
-    set(Template_INCLUDE  ${Template_SOURCE_DIR}/Source)
-    set(Template_LIBRARY  ${TargetName})
+    set(ResourceCompiler_INCLUDE  ${ResourceCompiler_SOURCE_DIR}/Source)
+    set(ResourceCompiler_LIBRARY  ${TargetName})
 endif()
 
 add_subdirectory(Source)
 
-if (Template_BUILD_TEST)
-    if (NOT Template_ExternalTarget)
+if (ResourceCompiler_BUILD_TEST)
+    if (NOT ResourceCompiler_ExternalTarget)
         add_gtest_source(Extern/ThirdParty)
     endif()
 
