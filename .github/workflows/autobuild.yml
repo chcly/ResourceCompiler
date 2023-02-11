@@ -1,0 +1,13 @@
+name: Build With CMake
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v3
+
+     - name: Configure
+       run: cmake -DTemplate_BUILD_TEST=ON -DTemplate_AUTO_RUN_TEST=ON .
+
+     - name: Build
+       run: make
