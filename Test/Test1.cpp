@@ -48,7 +48,7 @@ void ExpectContainsString(const String& name, const String& string)
             temp.push_back((char)ifs.get());
         else
         {
-            Console::writeLine(temp);
+            //Console::writeLine(temp);
             if (temp == string)
                 return;
 
@@ -58,6 +58,7 @@ void ExpectContainsString(const String& name, const String& string)
             temp.push_back((char)ifs.get());
         }
     }
+    Console::writeLine("failed to find: ", string);
     FAIL();
 }
 
@@ -85,15 +86,14 @@ GTEST_TEST(ResourceCompiler, RC_003)
         " ",
         TestFile("gen_002.txt"));
     
+    ExpectContainsString(OutputFile("out_002.h"),
+                         "static void getGen_002(ByteArray &dest);");
     Console::writeLine(Console::launch("/usr/bin/cat", OutputFile("out_002.cpp")));
-
-    //ExpectContainsString(OutputFile("out_002.h"),
-    //.                     "static void getGen_002(ByteArray &dest);");
-    //ExpectContainsString(OutputFile("out_002.cpp"), "gen_002[108]");
-    //ExpectContainsString(OutputFile("out_002.cpp"),
-    //                     "0x54,0x68,0x69,0x73,0x20,0x69,0x73,0x20,0x6d,0x65,0x61,0x6e,0x74,");
-    //ExpectContainsString(OutputFile("out_002.cpp"),
-    //                     "0x69,0x6c,0x65,0x72,0x20,0x74,0x65,0x73,0x74,0x20,0x52,0x43,0x5f,");
-    //ExpectContainsString(OutputFile("out_002.cpp"),
-    //                     "0x74,0x65,0x64,0x20,0x66,0x6f,0x72,0x20,0x20,0x0d,0x0a,0x65,0x71,");
+    ExpectContainsString(OutputFile("out_002.cpp"), "gen_002[107]");
+    ExpectContainsString(OutputFile("out_002.cpp"),
+                         "0x54,0x68,0x69,0x73,0x20,0x69,0x73,0x20,0x6d,0x65,0x61,0x6e,0x74,");
+    ExpectContainsString(OutputFile("out_002.cpp"),
+                         "0x74,0x65,0x64,0x20,0x66,0x6f,0x72,0x20,0x20,0x0a,0x65,0x71,0x75,");
+    ExpectContainsString(OutputFile("out_002.cpp"),
+                         "0x74,0x65,0x64,0x20,0x66,0x6f,0x72,0x20,0x20,0x0a,0x65,0x71,0x75,");
 }
