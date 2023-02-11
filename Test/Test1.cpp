@@ -48,6 +48,7 @@ void ExpectContainsString(const String& name, const String& string)
             temp.push_back((char)ifs.get());
         else
         {
+            Console::writeLine(temp);
             if (temp == string)
                 return;
 
