@@ -84,6 +84,8 @@ GTEST_TEST(ResourceCompiler, RC_003)
         OutputFile("out_002"),
         " ",
         TestFile("gen_002.txt"));
+    
+    Console::writeLine(Console::launch("/usr/bin/cat", OutputFile("out_002.cpp")));
 
     //ExpectContainsString(OutputFile("out_002.h"),
     //.                     "static void getGen_002(ByteArray &dest);");

@@ -126,7 +126,7 @@ namespace Rt2::ResourceCompiler
             if (len > 0)
             {
                 OutputStringStream srcImpl;
-                srcImpl << std::setw(0x07) << ' ' << "static uint8_t "
+                srcImpl << std::setw(0x07) << ' ' << "constexpr uint8_t "
                         << name
                         << "["
                         << len << "]={"
