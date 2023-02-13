@@ -36,10 +36,8 @@ endmacro()
 
 macro(ADD_RESOURCES OUT FILENAME NAMESPACE_NAME)
     ADD_RESOURCES_IMPL(${OUT}  ${FILENAME} ${NAMESPACE_NAME} " " ${ARGN})
-    message("OUT=${OUT}")
 endmacro()
 
 macro(ADD_TEXT_RESOURCES OUT FILENAME NAMESPACE_NAME)
     ADD_RESOURCES_IMPL(${OUT} ${FILENAME} ${NAMESPACE_NAME} "-a" ${ARGN})
-    message("OUT=${OUT}")
 endmacro()
