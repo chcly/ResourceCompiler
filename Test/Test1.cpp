@@ -23,8 +23,9 @@ GTEST_TEST(ResourceCompiler, RC_001)
        << " <options> <arg[0] .. arg[n]>\n\n"
           "-h, --help  Display this help message\n"
           "    -o          Specify the output file name\n"
-          "    -n          Specify a root namespace\n\n\n";
-
+          "    -n          Specify a root namespace\n"
+          "    -a          Filter only ascii characters\n\n\n";
+    
     size_t       st  = 0;
     const String exp = ss.str();
     if (out.substr(0, 3) == "[0m")

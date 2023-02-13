@@ -36,6 +36,7 @@ namespace Rt2::ResourceCompiler
     {
         OptOutputFileName,
         OptNameSpace,
+        OptAsciiOnly,
         OptionsMax,
     };
 
@@ -56,6 +57,15 @@ namespace Rt2::ResourceCompiler
          true,
          1,
          },
+
+        {
+         OptAsciiOnly,
+         'a',
+         nullptr,
+         "Filter only ascii characters",
+         true,
+         0,
+         }
     };
 
     struct Resource
@@ -73,6 +83,7 @@ namespace Rt2::ResourceCompiler
         String      _output;
         StringArray _input;
         ResourceMap _resources;
+        bool        _asciiOnly{false};
 
     public:
         Application() = default;
@@ -86,6 +97,7 @@ namespace Rt2::ResourceCompiler
             _output    = p.string(OptOutputFileName, 0, "Resources");
             _namespace = p.string(OptNameSpace, 0, "");
             _input     = p.arguments();
+            _asciiOnly = p.isPresent(OptAsciiOnly);
 
             if (_input.empty())
                 throw Exception("no input files");
@@ -109,6 +121,9 @@ namespace Rt2::ResourceCompiler
             while (in.read(&ch, 1))
             {
                 const int v = ch;
+                if (_asciiOnly && !isPrintableAscii(v))
+                    continue;
+
                 bufferImpl << "0x"
                            << std::setfill('0')
                            << std::setw(2)
