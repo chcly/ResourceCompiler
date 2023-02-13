@@ -145,6 +145,7 @@ namespace Rt2::ResourceCompiler
         {
             WriteUtils::write(out, 0x00, "#pragma once");
             WriteUtils::write(out, 0x00, "#include \"Utils/Array.h\"");
+            WriteUtils::write(out, 0x00, "#include \"Utils/String.h\"");
 
             String namespaceName;
             if (!_namespace.empty())
@@ -171,7 +172,12 @@ namespace Rt2::ResourceCompiler
                                   0x08,
                                   "static void get",
                                   StringUtils::toUpperFirst(name),
-                                  "(ByteArray &dest);");
+                                  "(ByteArray &dest);\n");
+                WriteUtils::write(out,
+                                  0x08,
+                                  "static void get",
+                                  StringUtils::toUpperFirst(name),
+                                  "(String &dest);");
             }
 
             WriteUtils::write(out, 0x04, "};");
@@ -200,6 +206,7 @@ namespace Rt2::ResourceCompiler
                 first = false;
 
                 String methodName = Su::join("get", StringUtils::toUpperFirst(name));
+                ///////////////////////////////////
                 WriteUtils::write(out,
                                   0x04,
                                   "void Resource::",
@@ -210,6 +217,26 @@ namespace Rt2::ResourceCompiler
                 {
                     WriteUtils::write(out, 0x00, source.data);
                     WriteUtils::write(out, 0x08, "dest.write(", name, ", ", source.size, ");");
+                }
+                else
+                {
+                    WriteUtils::write(out, 0x08, "// was unable to read any data from the supplied file, so");
+                    WriteUtils::write(out, 0x08, "dest.clear();");
+                }
+                WriteUtils::write(out, 0x04, "}\n");
+
+                ///////////////////////////////////
+                WriteUtils::write(out,
+                                  0x04,
+                                  "void Resource::",
+                                  methodName,
+                                  "(String &dest)");
+                WriteUtils::write(out, 0x04, '{');
+                if (source.size > 0)
+                {
+                    WriteUtils::write(out, 0x08, "ByteArray ba;");
+                    WriteUtils::write(out, 0x08, methodName, "(ba);");
+                    WriteUtils::write(out, 0x08, "dest = String((char*)ba.data(), ", source.size, ");");
                 }
                 else
                 {
