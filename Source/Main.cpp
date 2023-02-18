@@ -110,7 +110,7 @@ namespace Rt2::ResourceCompiler
             if (!in.is_open())
                 throw Exception("failed to open the supplied file '", input, '\'');
 
-            String name = Su::toLowerFirst(PathUtil(input).stem());
+            String name = Su::toUpperFirst(PathUtil(input).stem());
 
             OutputStringStream bufferImpl;
 
@@ -141,14 +141,14 @@ namespace Rt2::ResourceCompiler
             if (len > 0)
             {
                 OutputStringStream srcImpl;
-                srcImpl << std::setw(0x07) << ' ' << "constexpr uint8_t "
+                srcImpl << std::setw(0x03) << ' ' << "constexpr uint8_t "
                         << name
                         << "["
                         << len << "]={"
                         << std::endl
                         << bufferImpl.str()
                         << std::endl
-                        << std::setw(0x07) << ' ' << "};" << std::endl;
+                        << std::setw(0x03) << ' ' << "};" << std::endl;
 
                 _resources[name] = {srcImpl.str(), len};
             }
@@ -158,9 +158,9 @@ namespace Rt2::ResourceCompiler
 
         void writeHeader(OStream& out)
         {
-            WriteUtils::write(out, 0x00, "#pragma once");
-            WriteUtils::write(out, 0x00, "#include \"Utils/Array.h\"");
-            WriteUtils::write(out, 0x00, "#include \"Utils/String.h\"");
+            Ts::write(out, 0x00, "#pragma once");
+            Ts::write(out, 0x00, "#include \"Utils/Array.h\"");
+            Ts::write(out, 0x00, "#include \"Utils/String.h\"");
 
             String namespaceName;
             if (!_namespace.empty())
@@ -168,40 +168,40 @@ namespace Rt2::ResourceCompiler
             else
                 namespaceName = "Resources";
 
-            WriteUtils::write(out, 0x00, "namespace ", namespaceName);
-            WriteUtils::write(out, 0x00, '{');
-            WriteUtils::write(out, 0x04, "using ByteArray = SimpleArray<uint8_t>;");
-            WriteUtils::write(out, 0x00, '\n');
-            WriteUtils::write(out, 0x04, "class Resource");
-            WriteUtils::write(out, 0x04, '{');
-            WriteUtils::write(out, 0x04, "public:");
+            Ts::write(out, 0x00, "namespace ", namespaceName);
+            Ts::write(out, 0x00, '{');
+            Ts::write(out, 0x04, "using ByteArray = SimpleArray<uint8_t>;");
+            Ts::write(out, 0x00, '\n');
+            Ts::write(out, 0x04, "class Resource");
+            Ts::write(out, 0x04, '{');
+            Ts::write(out, 0x04, "public:");
 
             bool first = true;
 
             for (auto& [name, source] : _resources)
             {
                 if (!first)
-                    WriteUtils::newLine(out, 1);
+                    Ts::newLine(out, 1);
                 first = false;
-                WriteUtils::write(out,
-                                  0x08,
-                                  "static void get",
-                                  StringUtils::toUpperFirst(name),
-                                  "(ByteArray &dest);\n");
-                WriteUtils::write(out,
-                                  0x08,
-                                  "static void get",
-                                  StringUtils::toUpperFirst(name),
-                                  "(String &dest);");
+                Ts::write(out,
+                          0x08,
+                          "static void get",
+                          StringUtils::toUpperFirst(name),
+                          "(ByteArray &dest);\n");
+                Ts::write(out,
+                          0x08,
+                          "static void get",
+                          StringUtils::toUpperFirst(name),
+                          "(String &dest);");
             }
 
-            WriteUtils::write(out, 0x04, "};");
-            WriteUtils::write(out, 0x00, "} // namespace ", namespaceName);
+            Ts::write(out, 0x04, "};");
+            Ts::write(out, 0x00, "} // namespace ", namespaceName);
         }
 
         void writeSource(OStream& out)
         {
-            WriteUtils::writeLine(out, 0x00, 2, "#include \"", PathUtil(_output).stem(), ".h\"");
+            Ts::writeLine(out, 0x00, 2, "#include \"", PathUtil(_output).stem(), ".h\"");
             String namespaceName;
 
             if (!_namespace.empty())
@@ -209,58 +209,56 @@ namespace Rt2::ResourceCompiler
             else
                 namespaceName = "Resources";
 
-            WriteUtils::write(out, 0x00, "namespace ", namespaceName);
-            WriteUtils::write(out, 0x00, '{');
+            Ts::write(out, 0x00, "namespace ", namespaceName);
+            Ts::write(out, 0x00, '{');
 
             bool first = true;
 
             for (auto& [name, source] : _resources)
             {
                 if (!first)
-                    WriteUtils::newLine(out, 1);
+                    Ts::newLine(out, 1);
                 first = false;
 
                 String methodName = Su::join("get", StringUtils::toUpperFirst(name));
                 ///////////////////////////////////
-                WriteUtils::write(out,
-                                  0x04,
-                                  "void Resource::",
-                                  methodName,
-                                  "(ByteArray &dest)");
-                WriteUtils::write(out, 0x04, '{');
                 if (source.size > 0)
                 {
-                    WriteUtils::write(out, 0x00, source.data);
-                    WriteUtils::write(out, 0x08, "dest.write(", name, ", ", source.size, ");");
+                    Ts::write(out, 0x00, source.data);
                 }
+
+                Ts::write(out,
+                          0x04,
+                          "void Resource::",
+                          methodName,
+                          "(ByteArray &dest)");
+                Ts::write(out, 0x04, '{');
+                if (source.size > 0)
+                    Ts::write(out, 0x08, "dest.write(", name, ", ", source.size, ");");
                 else
                 {
-                    WriteUtils::write(out, 0x08, "// was unable to read any data from the supplied file, so");
-                    WriteUtils::write(out, 0x08, "dest.clear();");
+                    Ts::write(out, 0x08, "// was unable to read any data from the supplied file, so");
+                    Ts::write(out, 0x08, "dest.clear();");
                 }
-                WriteUtils::write(out, 0x04, "}\n");
+                Ts::write(out, 0x04, "}\n");
 
                 ///////////////////////////////////
-                WriteUtils::write(out,
-                                  0x04,
-                                  "void Resource::",
-                                  methodName,
-                                  "(String &dest)");
-                WriteUtils::write(out, 0x04, '{');
+                Ts::write(out,
+                          0x04,
+                          "void Resource::",
+                          methodName,
+                          "(String &dest)");
+                Ts::write(out, 0x04, '{');
                 if (source.size > 0)
-                {
-                    WriteUtils::write(out, 0x08, "ByteArray ba;");
-                    WriteUtils::write(out, 0x08, methodName, "(ba);");
-                    WriteUtils::write(out, 0x08, "dest = String((char*)ba.data(), ", source.size, ");");
-                }
+                    Ts::write(out, 0x08, "dest.assign((const char *)", name, ", ", source.size, ");");
                 else
                 {
-                    WriteUtils::write(out, 0x08, "// was unable to read any data from the supplied file, so");
-                    WriteUtils::write(out, 0x08, "dest.clear();");
+                    Ts::write(out, 0x08, "// was unable to read any data from the supplied file, so");
+                    Ts::write(out, 0x08, "dest.clear();");
                 }
-                WriteUtils::write(out, 0x04, '}');
+                Ts::write(out, 0x04, '}');
             }
-            WriteUtils::write(out, 0x00, "} // namespace ", namespaceName);
+            Ts::write(out, 0x00, "} // namespace ", namespaceName);
         }
 
         int go()

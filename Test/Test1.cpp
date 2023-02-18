@@ -49,7 +49,7 @@ void ExpectContainsString(const String& name, const String& string)
             temp.push_back((char)ifs.get());
         else
         {
-            //Console::writeLine(temp);
+            //Console::writeLine(temp); // show the sliding buffer
             if (temp == string)
                 return;
 
@@ -90,7 +90,7 @@ GTEST_TEST(ResourceCompiler, RC_003)
     ExpectContainsString(OutputFile("out_002.h"),
                          "static void getGen_002(ByteArray &dest);");
     Console::writeLine(Console::launch("/usr/bin/cat", OutputFile("out_002.cpp")));
-    ExpectContainsString(OutputFile("out_002.cpp"), "gen_002[107]");
+    ExpectContainsString(OutputFile("out_002.cpp"), "Gen_002[107]");
     ExpectContainsString(OutputFile("out_002.cpp"),
                          "0x54,0x68,0x69,0x73,0x20,0x69,0x73,0x20,0x6d,0x65,0x61,0x6e,0x74,");
     ExpectContainsString(OutputFile("out_002.cpp"),
