@@ -14,6 +14,8 @@ macro(ADD_RESOURCES_IMPL OUT FILENAME NAMESPACE_NAME OPTS)
         list(APPEND TEMPLATES ${N})
     endforeach(File)
 
+    set_group("Source" FILES {CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cpp)
+    set_group("Header" FILES {CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.h)
     set(OUTFILES 
         ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.h
         ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.cpp
