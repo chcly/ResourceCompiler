@@ -37,35 +37,15 @@ namespace Rt2::ResourceCompiler
         OptOutputFileName,
         OptNameSpace,
         OptAsciiOnly,
+        OptStripNewlines,
         OptionsMax,
     };
 
     constexpr CommandLine::Switch Switches[OptionsMax] = {
-        {
-         OptOutputFileName,
-         'o',
-         nullptr,
-         "Specify the output file name",
-         true,
-         1,
-         },
-        {
-         OptNameSpace,
-         'n',
-         nullptr,
-         "Specify a root namespace",
-         true,
-         1,
-         },
-
-        {
-         OptAsciiOnly,
-         'a',
-         nullptr,
-         "Filter only ascii characters",
-         true,
-         0,
-         }
+        {OptOutputFileName, 'o', nullptr,      "Specify the output file name", true, 1},
+        {     OptNameSpace, 'n', nullptr,          "Specify a root namespace", true, 1},
+        {     OptAsciiOnly, 'a', nullptr,      "Filter only ascii characters", true, 0},
+        { OptStripNewlines, 's', nullptr, R"(Strip all \n and \r characters)", true, 0},
     };
 
     struct Resource
@@ -84,6 +64,7 @@ namespace Rt2::ResourceCompiler
         StringArray _input;
         ResourceMap _resources;
         bool        _asciiOnly{false};
+        bool        _strip{false};
 
     public:
         Application() = default;
@@ -98,6 +79,7 @@ namespace Rt2::ResourceCompiler
             _namespace = p.string(OptNameSpace, 0, "");
             _input     = p.arguments();
             _asciiOnly = p.isPresent(OptAsciiOnly);
+            _strip     = p.isPresent(OptStripNewlines);
 
             if (_input.empty())
                 throw Exception("no input files");
@@ -122,6 +104,10 @@ namespace Rt2::ResourceCompiler
             {
                 const int v = ch;
                 if (_asciiOnly && !isPrintableAscii(v))
+                    continue;
+                if (_strip && isNewLine(v))
+                    continue;
+                if (_strip && isWhiteSpace(v) && isWhiteSpace(in.peek()))
                     continue;
 
                 bufferImpl << "0x"
@@ -161,6 +147,7 @@ namespace Rt2::ResourceCompiler
             Ts::write(out, 0x00, "#pragma once");
             Ts::write(out, 0x00, "#include \"Utils/Array.h\"");
             Ts::write(out, 0x00, "#include \"Utils/String.h\"");
+            Ts::newLine(out, 0x00);
 
             String namespaceName;
             if (!_namespace.empty())

@@ -7,8 +7,6 @@ macro(ADD_RESOURCES_IMPL OUT FILENAME NAMESPACE_NAME OPTS)
     set(OUT)
     set(TEMPLATES)
 
-
-
     foreach (File ${ARGN})
         get_filename_component(N ${File} ABSOLUTE)
         list(APPEND TEMPLATES ${N})
@@ -42,4 +40,9 @@ endmacro()
 
 macro(ADD_TEXT_RESOURCES OUT FILENAME NAMESPACE_NAME)
     ADD_RESOURCES_IMPL(${OUT} ${FILENAME} ${NAMESPACE_NAME} "-a" ${ARGN})
+endmacro()
+
+
+macro(ADD_STRIPPED_TEXT_RESOURCES OUT FILENAME NAMESPACE_NAME)
+    ADD_RESOURCES_IMPL(${OUT} ${FILENAME} ${NAMESPACE_NAME} "-a -s"  ${ARGN})
 endmacro()

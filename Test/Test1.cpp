@@ -24,7 +24,8 @@ GTEST_TEST(ResourceCompiler, RC_001)
           "-h, --help  Display this help message\n"
           "    -o          Specify the output file name\n"
           "    -n          Specify a root namespace\n"
-          "    -a          Filter only ascii characters\n\n\n";
+          "    -a          Filter only ascii characters\n"
+          "    -s          Strip all \\n and \\r characters\n\n\n";
     
     size_t       st  = 0;
     const String exp = ss.str();
