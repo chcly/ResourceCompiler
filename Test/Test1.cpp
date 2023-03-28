@@ -18,15 +18,37 @@ GTEST_TEST(ResourceCompiler, RC_001)
     const String exe = "ResourceCompiler";
 #endif
 
-    ss << "Usage: "
+    /*
+    Usage: ResourceCompiler.exe [<options> <arg[0] .. arg[n]>]
+
+      Where <arg[0] .. arg[n]> is a white space separated list
+       of input arguments, and one or more of the following:
+
+      <options>
+
+        -h, --help   - Display this message.
+        -o           - Specify the output file name.
+        -n           - Specify a root namespace.
+        -a           - Filter only ascii characters.
+        -s           - Strip all \n and \r characters.
+
+        '+' Is a required parameter.
+
+        */
+
+    ss << "\nUsage: "
        << exe
-       << " <options> <arg[0] .. arg[n]>\n\n"
-          "-h, --help  Display this help message\n"
-          "    -o          Specify the output file name\n"
-          "    -n          Specify a root namespace\n"
-          "    -a          Filter only ascii characters\n"
-          "    -s          Strip all \\n and \\r characters\n\n\n";
-    
+       << " [<options> <arg[0] .. arg[n]>]\n\n"
+          "  Where <arg[0] .. arg[n]> is a white space separated list\n"
+          "   of input arguments, and one or more of the following:\n\n"
+          "  <options>\n\n"
+          "    -h, --help   - Display this message.\n"
+          "    -o           - Specify the output file name.\n"
+          "    -n           - Specify a root namespace.\n"
+          "    -a           - Filter only ascii characters.\n"
+          "    -s           - Strip all \\n and \\r characters.\n\n"
+          "    '+' Is a required parameter.\n";
+
     size_t       st  = 0;
     const String exp = ss.str();
     if (out.substr(0, 3) == "[0m")
@@ -50,7 +72,7 @@ void ExpectContainsString(const String& name, const String& string)
             temp.push_back((char)ifs.get());
         else
         {
-            //Console::writeLine(temp); // show the sliding buffer
+            // Console::writeLine(temp); // show the sliding buffer
             if (temp == string)
                 return;
 
@@ -87,7 +109,7 @@ GTEST_TEST(ResourceCompiler, RC_003)
         OutputFile("out_002"),
         " ",
         TestFile("gen_002.txt"));
-    
+
     ExpectContainsString(OutputFile("out_002.h"),
                          "static void getGen_002(ByteArray &dest);");
     Console::writeLine(Console::launch("/usr/bin/cat", OutputFile("out_002.cpp")));
