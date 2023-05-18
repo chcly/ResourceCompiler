@@ -1,6 +1,6 @@
 # ResourceCompiler
 
-Compiles files into constexpr byte buffers so that files can be easily accessed in executables.
+Compiles files into constexpr byte buffers so that they can be easily accessed in executables.
 
 ## Testing
 
