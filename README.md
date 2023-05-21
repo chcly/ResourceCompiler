@@ -8,7 +8,8 @@ The Test directory is setup to work with [googletest](https://github.com/google/
 
 ## Building
 
-Building with CMake and Make.
+![A1](https://github.com/chcly/ResourceCompiler/actions/workflows/build-linux.yml/badge.svg)
+![A2](https://github.com/chcly/ResourceCompiler/actions/workflows/build-windows.yml/badge.svg)
 
 ```sh
 mkdir build

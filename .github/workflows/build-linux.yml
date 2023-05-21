@@ -1,0 +1,11 @@
+name: Linux
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v3
+     - name: Configure
+       run: cmake -S . -B Build -DResourceCompiler_BUILD_TEST=ON -DResourceCompiler_AUTO_RUN_TEST=ON
+     - name: Build
+       run: cmake --build Build
