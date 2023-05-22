@@ -1,6 +1,6 @@
 # ResourceCompiler
 
-Compiles files into byte buffers so that they can be easily accessed in executables.
+Compiles files into buffers so that they can be easily accessed in executables.
 
 ## Testing
 
