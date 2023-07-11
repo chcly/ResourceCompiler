@@ -32,6 +32,7 @@ if (ResourceCompiler_ExternalTarget)
     set(TargetGroup   ${ResourceCompiler_TargetGroup})
 else()
     add_subdirectory(CMake)
+    include(${ResourceCompiler_SOURCE_DIR}/Internal/Utils/CMake/Locals.cmake)
     add_subdirectory(Internal/Utils)
 
     set(TargetFolders TRUE)

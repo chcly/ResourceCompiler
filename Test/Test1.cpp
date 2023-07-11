@@ -82,7 +82,7 @@ void ExpectContainsString(const String& name, const String& string)
             temp.push_back((char)ifs.get());
         }
     }
-    Console::writeLine("failed to find: ", string);
+    Console::println("failed to find: ", string);
     FAIL();
 }
 

@@ -147,7 +147,7 @@ namespace Rt2::ResourceCompiler
             Ts::write(out, 0x00, "#pragma once");
             Ts::write(out, 0x00, "#include \"Utils/Array.h\"");
             Ts::write(out, 0x00, "#include \"Utils/String.h\"");
-            Ts::newLine(out, 0x00);
+            Ts::nl(out, 0x00);
 
             String namespaceName;
             if (!_namespace.empty())
@@ -168,7 +168,7 @@ namespace Rt2::ResourceCompiler
             for (auto& [name, source] : _resources)
             {
                 if (!first)
-                    Ts::newLine(out, 1);
+                    Ts::nl(out, 1);
                 first = false;
                 Ts::write(out,
                           0x08,
@@ -204,7 +204,7 @@ namespace Rt2::ResourceCompiler
             for (auto& [name, source] : _resources)
             {
                 if (!first)
-                    Ts::newLine(out, 1);
+                    Ts::nl(out, 1);
                 first = false;
 
                 String methodName = Su::join("get", StringUtils::toUpperFirst(name));
